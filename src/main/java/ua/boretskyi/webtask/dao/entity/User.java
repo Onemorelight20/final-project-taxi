@@ -1,4 +1,4 @@
-package ua.boretskyi.webtask.entity;
+package ua.boretskyi.webtask.dao.entity;
 
 public class User {
 	private int id;
@@ -6,6 +6,8 @@ public class User {
 	private String phoneNumber;
 	private String email;
 	private String password;
+	private String role;
+	private double spentMoney;
 	
 	public User() {
 	}
@@ -16,46 +18,42 @@ public class User {
 		this.email = email;
 		this.password = password;
 	}
-	/**
-	 * @return the id
-	 */
+	
+	public void setId(int id) {
+		this.id = id;
+	}
+
+
 	public int getId() {
 		return id;
 	}
 
-	/**
-	 * @return the name
-	 */
+
 	public String getName() {
 		return name;
 	}
-	/**
-	 * @param name the name to set
-	 */
+
+
 	public void setName(String name) {
 		this.name = name;
 	}
-	/**
-	 * @return the email
-	 */
+
+
 	public String getEmail() {
 		return email;
 	}
-	/**
-	 * @param email the email to set
-	 */
+
+
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	/**
-	 * @return the password
-	 */
+
+
 	public String getPassword() {
 		return password;
 	}
-	/**
-	 * @param password the password to set
-	 */
+
+
 	public void setPassword(String password) {
 		this.password = password;
 	}
@@ -66,6 +64,23 @@ public class User {
 	
 	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
+	}
+	
+	public void setRole(String role) {
+		this.role = role;
+	}
+	
+	public String getRole() {
+		return role;
+	}
+	
+	public void setSpentMoney(double amountOfMoney) {
+		
+		spentMoney = amountOfMoney;
+	}
+	
+	public double getSpentMoney() {
+		return spentMoney;
 	}
 
 	@Override
