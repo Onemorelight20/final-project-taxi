@@ -3,10 +3,24 @@ package ua.boretskyi.webtask.dao.entity;
 public class Car {
 	private int id;
 	private String model;
-	private CarStatus status;
+	private Status status;
 	private int driverId;
 	private int seatsAvailable;
-	private CarType type;
+	private Type type;
+	
+	
+	public Car() {
+		
+	}
+	
+	public Car(String model, Status status, int driverId, int seatsAvailable, Type type) {
+		this.model = model;
+		this.status = status;
+		this.driverId = driverId;
+		this.seatsAvailable = seatsAvailable;
+		this.type = type;
+	}
+	
 	public int getId() {
 		return id;
 	}
@@ -23,11 +37,11 @@ public class Car {
 		this.model = model;
 	}
 	
-	public CarStatus getStatus() {
+	public Status getStatus() {
 		return status;
 	}
 	
-	public void setStatus(CarStatus status) {
+	public void setStatus(Status status) {
 		this.status = status;
 	}
 	
@@ -47,26 +61,39 @@ public class Car {
 		this.seatsAvailable = seatsAvailable;
 	}
 	
-	public CarType getType() {
+	public Type getType() {
 		return type;
 	}
 	
-	public void setType(CarType type) {
+	public void setType(Type type) {
 		this.type = type;
 	}
 	
+	public enum Status{
+		AVAILABLE,
+		BUSY,
+		UNAVAILABLE;
+		
+		@Override public String toString() {
+			  return this.name().toLowerCase();
+		}
+	}
+
+	public enum Type{
+		ECONOM,
+		LUXURY,
+		MINIBUS;
+		
+		@Override public String toString() {
+			  return this.name().toLowerCase();
+		}
+	}
+
+	@Override
+	public String toString() {
+		return "Car [id=" + id + ", model=" + model + ", status=" + status + ", driverId=" + driverId
+				+ ", seatsAvailable=" + seatsAvailable + ", type=" + type + "]";
+	}
 	
-}
-
-
-enum CarStatus{
-	AVAILABLE,
-	IN_RIDE,
-	FULLY_UNAVAILABLE
-}
-
-enum CarType{
-	ECONOM,
-	LUXURY,
-	MINIBUS
+	
 }

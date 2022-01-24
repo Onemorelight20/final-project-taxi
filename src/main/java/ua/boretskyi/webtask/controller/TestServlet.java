@@ -9,32 +9,30 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import ua.boretskyi.webtask.dao.DAOFactory;
-import ua.boretskyi.webtask.dao.UserDAO;
-import ua.boretskyi.webtask.dao.entity.User;
+import ua.boretskyi.webtask.dao.entity.Car;
+import ua.boretskyi.webtask.dao.entity.Ride;
 import ua.boretskyi.webtask.logic.DBException;
+import ua.boretskyi.webtask.logic.RideManager;
 
-@WebServlet("/*")
+@WebServlet("/test")
 public class TestServlet extends HttpServlet{
 	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException{
-		DAOFactory f = DAOFactory.getInstance();
-		UserDAO udao = f.getUserDAO();
+		RideManager manager = new RideManager();
 		try {
 			PrintWriter writer = resp.getWriter();
-			List<User> users = udao.findAll();
-
-			User user = new User();
-			writer.append("<html><body>");
 			
+		Car.Type[] e = Car.Type.values();
+		
+			List<Ride> rides = manager.findAll();
+			writer.append("<html><body>");
 			writer.append("<ol>");
-			for(User u : users) {
+			for(Ride r : rides) {
 				writer.append("<li>");
-				writer.append(u.toString());
+				writer.append(r.toString());
 				writer.append("</li>");
 			}
-			
 			writer.append("</ol>");
 			writer.append("</body></html>");
 			

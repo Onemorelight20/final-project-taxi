@@ -3,6 +3,9 @@ package ua.boretskyi.webtask.controller;
 
 import java.io.IOException;
 
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Logger;
+
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -12,14 +15,17 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import ua.boretskyi.webtask.dao.entity.User;
+import ua.boretskyi.webtask.logic.DBException;
+import ua.boretskyi.webtask.logic.UserManager;
+
+
 
 @WebServlet("/login")
-public class LoginServlet extends HttpServlet{
+public class Login extends HttpServlet{
 	private static final long serialVersionUID = 1L;
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		//req.getRequestDispatcher("user-profile.jsp").forward(req, resp);
 		req.getRequestDispatcher("login.jsp").forward(req, resp);
 	}
 	
@@ -28,11 +34,20 @@ public class LoginServlet extends HttpServlet{
 		String email = req.getParameter("email");
 		String password = req.getParameter("password");
 
+		Logger logger = Logger.getLogger(Login.class);
+		BasicConfigurator.configure();
+		logger.info("This is my first log4j's statement");
+
+		UserManager userManager = new UserManager();
+		User user = null;
+		try {
+			user = userManager.findUser(email, password);
+		} catch (DBException e) {
+			e.printStackTrace();
+		}
 		
-		User user = null;;
-		String destPage = "login.jsp";
+		
 		if(user != null) {
-			System.out.println(user);
 			HttpSession session = req.getSession();
 				session.setAttribute("user", user);
 				resp.sendRedirect("profile");
@@ -40,7 +55,7 @@ public class LoginServlet extends HttpServlet{
 			System.out.println("wrong email or password");
 			String message = "Invalid email/password";
 			req.setAttribute("message", message);
-			RequestDispatcher dispatcher = req.getRequestDispatcher(destPage);
+			RequestDispatcher dispatcher = req.getRequestDispatcher("login.jsp");
 			dispatcher.forward(req, resp);
 		}
 	}

@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
+    <%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,7 +10,7 @@
     <!-- Bootstrap core CSS -->
 <link href="css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 
-    <!-- Favicons -->
+ 
 <link rel="apple-touch-icon" href="https://getbootstrap.com/docs/5.1/assets/img/favicons/apple-touch-icon.png" sizes="180x180">
 <link rel="icon" href="https://getbootstrap.com/docs/5.1/assets/img/favicons/favicon-32x32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="https://getbootstrap.com/docs/5.1/assets/img/favicons/favicon-16x16.png" sizes="16x16" type="image/png">
@@ -69,8 +70,12 @@
       <input type="password" class="form-control last" id="floatingPassword" placeholder="Password" name="conpassword">
       <label for="floatingPassword">Repeat your password</label>
     </div>
-    <%=(request.getAttribute("errMessage") == null) ? ""
-         : request.getAttribute("errMessage")%>
+    
+    <c:if test="${!empty errMessage}">
+    <div class="alert alert-warning" role="alert">
+ 		<%=session.getAttribute("errMessage")%>
+	</div>
+    </c:if>
 
     
     <button class="w-100 btn btn-lg btn-primary" type="submit">Sign up</button>

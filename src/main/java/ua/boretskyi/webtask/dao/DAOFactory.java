@@ -28,7 +28,6 @@ public abstract class DAOFactory {
 	
 	public abstract CarDAO getCarDAO();
 	
-	public abstract CarDriverDAO getDriverDAO();
 	
 	public abstract RideDAO getRideDAO();	
 }

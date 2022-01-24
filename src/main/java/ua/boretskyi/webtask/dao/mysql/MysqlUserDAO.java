@@ -28,19 +28,22 @@ public class MysqlUserDAO implements UserDAO {
 	
 	@Override
 	public void createUser(User user) throws DBException {
-		Connection conn = null;
+		Connection conn = pool.getConnection();
 		PreparedStatement ps = null;
+		ResultSet rs = null;
 		try {
-			conn = pool.getConnection();
 			ps = conn.prepareStatement(PS_INSERT_USER_BY_NAME_EMAIL_PNONE_PASSWORD, PreparedStatement.RETURN_GENERATED_KEYS);
 			fillInUserData(user, ps);
 			ps.executeUpdate();
-			updateUserId(user, ps);
+			rs = ps.getGeneratedKeys();
+			rs.next();
+			user.setId(rs.getInt(1));
 		} catch (SQLException e) {
 			//here goes logging
 			
 			throw new DBException("failed to prepare a statement", e);
 		} finally {
+			close(rs);
 			close(ps);
 			close(conn);
 		}
@@ -51,12 +54,13 @@ public class MysqlUserDAO implements UserDAO {
 	public User findUser(int userId) throws DBException {
 		Connection conn = pool.getConnection();
 		PreparedStatement ps = null;
+		ResultSet rs = null;
 		User user = new User();
 		
 		try {
 			ps = conn.prepareStatement(PS_FIND_USER_BY_ID);
 			ps.setInt(1, userId);
-			ResultSet rs = ps.executeQuery();
+			rs = ps.executeQuery();
 			rs.next();
 			fillAllUserDataFromResultSet(user, rs);
 			return user;
@@ -65,6 +69,7 @@ public class MysqlUserDAO implements UserDAO {
 			
 			throw new DBException("failed to find a user by id", e);
 		} finally {
+			close(rs);
 			close(ps);
 			close(conn);
 		}
@@ -193,16 +198,8 @@ public class MysqlUserDAO implements UserDAO {
 		ps.setString(3, user.getPhoneNumber());
 		ps.setString(4, user.getPassword());
 	}
-	
-	private void updateUserId(User user, PreparedStatement ps) throws SQLException {
-		ResultSet rs = ps.getGeneratedKeys();
-		if(rs.next()) {
-		user.setId(rs.getInt(1));
-		} else {
-			System.out.println("#updateUserId ResultSet was empty");
-		}
-		close(rs);
-	}
+
+
 	
 	private void fillAllUserDataFromResultSet(User user, ResultSet rs) throws SQLException {
 		user.setId(rs.getInt("id"));

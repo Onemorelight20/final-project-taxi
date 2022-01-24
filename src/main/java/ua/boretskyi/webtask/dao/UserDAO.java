@@ -22,7 +22,7 @@ public interface UserDAO {
 	void deleteUser(int userId) throws DBException; 
 
 
-	User findUser(String userLogin) throws DBException ;
+	User findUser(String userLogin) throws DBException;
 	
 	List<User> findAll() throws DBException;
 

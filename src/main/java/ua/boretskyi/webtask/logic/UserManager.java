@@ -38,4 +38,16 @@ public class UserManager {
 		return udao.findAll();
 	}
 	
+	public boolean userAlreadyExists(String email) {
+		User user = null;
+		try {
+			user = findUser(email);
+		} catch (DBException e) {
+			e.printStackTrace();
+		}
+
+		return user != null;
+		
+	}
+	
 }

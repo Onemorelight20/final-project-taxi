@@ -6,15 +6,44 @@ public class Ride {
 	private int rideId;
 	private String placeFrom;
 	private String placeTo;
+	private Status status;
 	private int peopleInRide;
 	private Date timeCreated;
 	private Date expectedFinishTime;
 	private int carId;
 	private int userId;
+	private int driverId;
 	private String description;
 	private double price;
 	
+	public Ride() {
+		
+	}
 	
+	
+	public Ride(String from, String to, int peopleInRide, Date expectedFinishTime, 
+			int carId, int userId, int driverId, double price) {
+		placeFrom = from;
+		placeTo = to;
+		this.peopleInRide = peopleInRide;
+		this.expectedFinishTime = expectedFinishTime;
+		this.carId = carId;
+		this.userId = userId;
+		this.driverId = driverId;
+		this.price = price;
+		this.status = Status.CREATED;
+	}
+	
+	public Status getStatus() {
+		return status;
+	}
+
+
+	public void setStatus(Status status) {
+		this.status = status;
+	}
+
+
 	public int getRideId() {
 		return rideId;
 	}
@@ -79,6 +108,15 @@ public class Ride {
 		this.userId = userId;
 	}
 	
+	public int getDriverId() {
+		return driverId;
+	
+	}
+	
+	public void setDriverId(int driverId) {
+		this.driverId = driverId;
+	}
+	
 	public String getDescription() {
 		return description;
 	}
@@ -94,6 +132,19 @@ public class Ride {
 	public void setPrice(double price) {
 		this.price = price;
 	}
+
+	@Override
+	public String toString() {
+		return "Ride [rideId=" + rideId + ", placeFrom=" + placeFrom + ", placeTo=" + placeTo + ", peopleInRide="
+				+ peopleInRide + ", timeCreated=" + timeCreated + ", expectedFinishTime=" + expectedFinishTime
+				+ ", carId=" + carId + ", userId=" + userId + ", driverId=" + driverId + ", description=" + description
+				+ ", price=" + price + "]";
+	}
 	
 	
+	public enum Status {
+		CREATED,
+		SUBMITTED,
+		FINISHED
+	}
 }

@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
+    pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -36,7 +37,6 @@
     </style>
 
     
-    <!-- Custom styles for this template -->
     <link href="css/signin.css" rel="stylesheet">
   </head>
   <body class="text-center">
@@ -57,11 +57,7 @@
       <label for="floatingPassword">Password</label>
     </div>
 
-    <div class="checkbox mb-3">
-      <label>
-        <input type="checkbox" value="remember-me"> Remember me
-      </label>
-    </div>
+   
     <br>${message}
     <button class="w-100 btn btn-lg btn-primary" type="submit">Log in</button>
     <p class="mt-5 mb-3 text-muted">© 2022</p>
