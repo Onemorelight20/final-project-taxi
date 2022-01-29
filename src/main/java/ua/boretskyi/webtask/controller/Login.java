@@ -36,8 +36,9 @@ public class Login extends HttpServlet{
 
 		Logger logger = Logger.getLogger(Login.class);
 		BasicConfigurator.configure();
-		logger.info("This is my first log4j's statement");
-
+		logger.info("User tries to log in with email " + email);
+		
+		
 		UserManager userManager = new UserManager();
 		User user = null;
 		try {

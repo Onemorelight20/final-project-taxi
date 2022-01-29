@@ -12,10 +12,12 @@
 	integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
 	crossorigin="anonymous">
 <style type="text/css">
-input ~ .tab { display: none } 
-
-#btnradio1:checked ~ .tab.content1, #btnradio2:checked ~ .tab.content2 {
-	display: block;
+ .tab_content {
+ 	display: none;
+ }
+ 
+ #tab1:checked ~ .tab_content{
+	display: inline-block;
 }
 </style>
 </head>
@@ -35,15 +37,17 @@ input ~ .tab { display: none }
 			</ul>
 		</div>
 		<div class="btn-group my-3" role="group">
-			<input type="radio" class="btn-check" name="btnradio" id="btnradio1"
+			<input type="radio" class="btn-check" name="btnradio" id="tab1"
 				checked> <label class="btn btn-outline-primary"
-				for="btnradio1">All time stats</label> <input type="radio"
-				class="btn-check" name="btnradio" id="btnradio2"> <label
-				class="btn btn-outline-primary" for="btnradio2">Last months
+				for="tab1">All time stats</label> 
+			<input type="radio" class="btn-check" name="btnradio" id="tab2"> <label
+				class="btn btn-outline-primary" for="tab2">Last months
 				stats</label>
 		</div>
-		<div class="tab content1">Tab1 Contents</div>
-		<div class="tab content2">Tab2 Contents</div>
+		
+				<div class="tab_content">Tab1 Contents</div>
+				
+		<div class="tab_content">Tab2 Contents</div>
 	</div>
 
 </body>

@@ -15,6 +15,8 @@ public interface CarDAO {
 	
 	void updateCar(int id, Car car) throws DBException;
 	
+	void setCarStatus(int id, Car.Status status) throws DBException;
+	
 	void deleteCar(int carId) throws DBException;
 	
 	Car findCar(Car car) throws DBException;

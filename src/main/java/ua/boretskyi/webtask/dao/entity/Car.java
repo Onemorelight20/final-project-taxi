@@ -69,7 +69,16 @@ public class Car {
 		this.type = type;
 	}
 	
-	public enum Status{
+
+	@Override
+	public String toString() {
+		return "Car [id=" + id + ", model=" + model + ", status=" + status + ", driverId=" + driverId
+				+ ", seatsAvailable=" + seatsAvailable + ", type=" + type + "]";
+	}
+	
+	
+
+	public static enum Status{
 		AVAILABLE,
 		BUSY,
 		UNAVAILABLE;
@@ -79,7 +88,7 @@ public class Car {
 		}
 	}
 
-	public enum Type{
+	public static enum Type{
 		ECONOM,
 		LUXURY,
 		MINIBUS;
@@ -88,12 +97,4 @@ public class Car {
 			  return this.name().toLowerCase();
 		}
 	}
-
-	@Override
-	public String toString() {
-		return "Car [id=" + id + ", model=" + model + ", status=" + status + ", driverId=" + driverId
-				+ ", seatsAvailable=" + seatsAvailable + ", type=" + type + "]";
-	}
-	
-	
 }

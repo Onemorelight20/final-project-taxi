@@ -1,12 +1,14 @@
 package ua.boretskyi.webtask.dao.entity;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable{
 	private int id;
 	private String name;
 	private String phoneNumber;
 	private String email;
 	private String password;
-	private String role;
+	private Role role;
 	private double spentMoney;
 	
 	public User() {
@@ -66,11 +68,11 @@ public class User {
 		this.phoneNumber = phoneNumber;
 	}
 	
-	public void setRole(String role) {
+	public void setRole(Role role) {
 		this.role = role;
 	}
 	
-	public String getRole() {
+	public Role getRole() {
 		return role;
 	}
 	
@@ -88,5 +90,13 @@ public class User {
 		return "User [id=" + id + ", name=" + name + ", phoneNumber=" + phoneNumber + ", email=" + email + "]";
 	}
 	
-	
+	public enum Role{
+		CLIENT,
+		ADMIN,
+		DRIVER;
+		
+		@Override public String toString() {
+			return this.name().toLowerCase();
+		}
+	}
 }

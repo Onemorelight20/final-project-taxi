@@ -10,6 +10,7 @@ import java.util.List;
 
 import ua.boretskyi.webtask.dao.CarDAO;
 import ua.boretskyi.webtask.dao.entity.Car;
+import ua.boretskyi.webtask.dao.entity.Car.Status;
 import ua.boretskyi.webtask.dao.util.ConnectionPool;
 import ua.boretskyi.webtask.logic.DBException;
 
@@ -17,6 +18,7 @@ public class MysqlCarDAO implements CarDAO {
 
 	private static final String PS_INSERT_CAR_BY_MODEL_STATUS_DRIVER_ID_SEATS_TYPE ="INSERT INTO car VALUES (DEFAULT, ?, ?, ?, ?, ?)";
 	private static final String PS_UPDATE_CAR_BY_ID = "UPDATE car SET car_model=?,car_status=?,driver_id=?,seats_available=?,car_type=? WHERE id=?";
+	private static final String PS_UPDATE_STATUS_BY_ID = "UPDATE car set car_status=? where id=?"; 
 	private static final String PS_FIND_CAR_BY_ID = "SELECT * FROM car WHERE id=?";
 	private static final String PS_FIND_ALL_CARS = "SELECT * FROM car";
 	private static final String PS_DELETE_CAR_BY_ID = "DELETE FROM car WHERE id=?"; 
@@ -71,9 +73,23 @@ public class MysqlCarDAO implements CarDAO {
 		}
 	}
 
-
-
-
+	
+	@Override
+	public void setCarStatus(int id, Status status) throws DBException {
+		Connection conn = pool.getConnection();
+		PreparedStatement ps = null;
+		try {
+			ps = conn.prepareStatement(PS_UPDATE_STATUS_BY_ID);
+			ps.setString(1, status.toString().toLowerCase());
+			ps.setInt(2, id);
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			
+			throw new DBException("failed to update car status to " + status.toString() + " with id " + id , e);
+		}
+	}
+	
 	@Override
 	public void updateCar(Car car) throws DBException {
 		updateCar(car.getId(), car);
@@ -191,7 +207,5 @@ public class MysqlCarDAO implements CarDAO {
 			e.printStackTrace();
 		}
 	}
-
-
 
 }

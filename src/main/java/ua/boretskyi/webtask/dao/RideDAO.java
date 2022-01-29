@@ -8,6 +8,8 @@ import ua.boretskyi.webtask.logic.DBException;
 public interface RideDAO {
 	void createRide(Ride ride) throws DBException;
 	
+	void createRides(Ride ...rides) throws DBException;
+	
 	Ride findRide(int rideId) throws DBException;
 	
 	void updateRide(int rideId, Ride ride) throws DBException;

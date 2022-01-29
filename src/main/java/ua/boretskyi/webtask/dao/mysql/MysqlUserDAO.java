@@ -10,6 +10,7 @@ import java.util.List;
 
 import ua.boretskyi.webtask.dao.UserDAO;
 import ua.boretskyi.webtask.dao.entity.User;
+import ua.boretskyi.webtask.dao.entity.User.Role;
 import ua.boretskyi.webtask.dao.util.ConnectionPool;
 import ua.boretskyi.webtask.logic.DBException;
 
@@ -38,6 +39,7 @@ public class MysqlUserDAO implements UserDAO {
 			rs = ps.getGeneratedKeys();
 			rs.next();
 			user.setId(rs.getInt(1));
+			user.setRole(User.Role.CLIENT);
 		} catch (SQLException e) {
 			//here goes logging
 			
@@ -208,7 +210,7 @@ public class MysqlUserDAO implements UserDAO {
 		user.setPhoneNumber(rs.getString("phone_number"));
 		user.setPassword(rs.getString("password"));
 		user.setSpentMoney(rs.getDouble("spent_money"));
-		user.setRole(rs.getString("role"));
+		user.setRole(Role.valueOf(rs.getString("role").toUpperCase()));
 	}
 	
 	private void close(PreparedStatement ps) {

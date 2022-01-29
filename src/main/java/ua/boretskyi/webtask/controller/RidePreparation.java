@@ -12,7 +12,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import ua.boretskyi.webtask.dao.entity.Car;
 import ua.boretskyi.webtask.dao.entity.Ride;
-import ua.boretskyi.webtask.dao.entity.RideBean;
 import ua.boretskyi.webtask.dao.entity.User;
 import ua.boretskyi.webtask.logic.CarManager;
 import ua.boretskyi.webtask.logic.DBException;
@@ -25,38 +24,40 @@ public class RidePreparation extends HttpServlet{
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		HttpSession session = req.getSession();
-		CarManager manager = new CarManager();
-		RideManager rm = new RideManager();
+		CarManager carManager = new CarManager();
 		List<Car> suitableCars = new ArrayList<>(); 
 		List<Car> allCars = new ArrayList<>();
-		RideBean bean = (RideBean)session.getAttribute("rideInfo");
+		RideBuilder rideBuilder = (RideBuilder)session.getAttribute("rideInfo");
+		
 		try {
-			suitableCars = manager.findSpecificCars(bean.getNumberOfPassengers(), bean.getTypeOfCar());
-			
+			suitableCars = carManager.findSpecificCars(rideBuilder.getNumberOfPassengers(), rideBuilder.getTypeOfCar());
+			allCars = carManager.findAllAvailableCarsWithSeatsAvailable(rideBuilder.getNumberOfPassengers());
 		} catch (DBException e) {
 			e.printStackTrace();
 		}
 		
 		if(req.getParameter("carid") != null) {
-			
-			int id = Integer.parseInt((String) req.getParameter("carid"));
+			int id = 0;
 			try {
-				Car selected = manager.findCar(id);
+				id = Integer.parseInt((String) req.getParameter("carid"));
+				Car selected = carManager.findCar(id);
 				session.setAttribute("car", selected);
-				bean.setTypeOfCar(selected.getType());
-			} catch (DBException e) {
+				rideBuilder.setTypeOfCar(selected.getType());
+			} catch (NumberFormatException | DBException e) {
 				e.printStackTrace();
 				String message = "Failed to find a car with id " + id;
 				forwardToErrorPage(req, resp, message);
 				return;
-			}
+			} 
 		} else {
 			session.removeAttribute("car");
 		}
+
 		
-		if(req.getParameter("allAvailable") != null || suitableCars.isEmpty()){
+		if(req.getParameter("severalCars") != null ) {
 			try {
-				allCars = manager.findAllAvailableCars();
+				List<Car> pack = carManager.findSeveralAvailableCarOfSelectedType(rideBuilder.getNumberOfPassengers(), rideBuilder.getTypeOfCar());
+				session.setAttribute("pack", pack);
 			} catch (DBException e) {
 				e.printStackTrace();
 			}
@@ -64,27 +65,25 @@ public class RidePreparation extends HttpServlet{
 		
 		session.setAttribute("suitableCars", suitableCars);
 
+		System.out.println(allCars);
 		session.setAttribute("allAvailableCars", allCars);
-		session.setAttribute("rideInfo", bean);
 		req.getRequestDispatcher("ride-confirmation.jsp").forward(req, resp);
-		
-		
 	}
 
 	
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		HttpSession session = req.getSession();
-		
-		
+		RideBuilder rideBuilder = (RideBuilder)session.getAttribute("rideInfo");
+		User user = (User)session.getAttribute("user");
 		RideManager rm = new RideManager();
-			if(session.getAttribute("car") != null && session.getAttribute("rideInfo") != null) {
-			RideBuilder rb = new RideBuilder();
-			Ride ride = rb.buildRide((RideBean)session.getAttribute("rideInfo"), (Car)session.getAttribute("car"), (User)session.getAttribute("user"));
+		
+			if(session.getAttribute("car") != null && rideBuilder != null) {
+			Ride ride = rideBuilder.buildRide((Car)session.getAttribute("car"), user);
 
 			try {
 				rm.createRide(ride);
-				session.setAttribute("successMessage", "The ride was successfully created");
+				session.setAttribute(Profile.SUCCESS_MESSAGE_ATTRIBUTE, "The ride was successfully created");
 				resp.sendRedirect("profile");
 				return;
 			} catch (DBException e) {
@@ -93,8 +92,27 @@ public class RidePreparation extends HttpServlet{
 			session.removeAttribute("car");
 			session.removeAttribute("rideInfo");
 			return;
+			} else if (req.getParameter("severalCars") != null){
+				List<Car> pack = (List<Car>)session.getAttribute("pack");
+				List<Ride> ridesToCreate = new ArrayList<>();
+				for(Car car : pack) {
+					Ride ride = rideBuilder.buildRide(car.getSeatsAvailable(), car, user);
+					ridesToCreate.add(ride);
+				}
+				Ride[] rides = new Ride[ridesToCreate.size()];
+				ridesToCreate.toArray(rides);
+				try {
+					rm.createRides(rides);
+				} catch (DBException e) {
+					e.printStackTrace();
+					
+					forwardToErrorPage(req, resp, "Failed to create a transaction");
+				}
+				session.setAttribute(Profile.SUCCESS_MESSAGE_ATTRIBUTE, "The rides were successfully created");
+				resp.sendRedirect("profile");
+				return;
 			} else {
-				req.getRequestDispatcher("error.jsp").forward(req, resp);
+				forwardToErrorPage(req, resp, "Something went wrong");
 			}
 	}
 	

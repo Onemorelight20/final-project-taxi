@@ -13,10 +13,6 @@
 	crossorigin="anonymous">
 </head>
 <body>
-	<%
-	String msg = (String) session.getAttribute("successMessage");
-	session.removeAttribute("successMessage");
-	%>
 	<jsp:include page="header.jsp"></jsp:include>
 	<c:if test="true">
 		<div class="container">
@@ -37,10 +33,8 @@
 		</div>
 
 		<div class="container pt-3">
-			<c:if test="<%=msg != null%>">
-				<div class="alert alert-success" role="alert">
-					<%=msg%>
-				</div>
+			<c:if test="${not empty sessionScope.successMessage}">
+				<div class="alert alert-success" role="alert">${sessionScope.successMessage}</div>
 			</c:if>
 			<c:if test="${empty param.order}">
 				<a type="button" class="btn btn-warning" href="profile?order=true">Order
