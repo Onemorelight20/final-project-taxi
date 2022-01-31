@@ -149,6 +149,9 @@ public class MysqlRideDAO implements RideDAO {
 			e.printStackTrace();
 
 			throw new DBException("failed to delete a ride " + ride, e);
+		} finally {
+			close(ps);
+			close(conn);
 		}
 
 	}
@@ -171,13 +174,17 @@ public class MysqlRideDAO implements RideDAO {
 			e.printStackTrace();
 
 			throw new DBException("failed to find all records in ride table. Exception occured with list " + result, e);
+		} finally {
+			close(rs);
+			close(statement);
+			close(conn);
 		}
 	}
 
-	private void close(PreparedStatement ps) {
+	private void close(Statement statement) {
 		try {
-			if (ps != null)
-				ps.close();
+			if (statement != null)
+				statement.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

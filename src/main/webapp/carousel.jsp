@@ -27,21 +27,21 @@
         <!-- Wrapper for carousel items -->
         <div class="carousel-inner">
             <div class="carousel-item active">
-                <img src="img/pexels-jéshoots-7405.jpg" class="d-block w-100 img-fluid" alt="Slide 1">
+                <img src="img/person-with-phone.jpg" class="d-block w-100 img-fluid" alt="Slide 1">
                 <div class="carousel-caption d-none d-md-block">
                     <h5>Availability</h5>
                     <p>All that you need is just a smartphone and an Internet connection</p>
                 </div>
             </div>
             <div class="carousel-item">
-                <img src="img/pexels-kai-pilger-462867.jpg" class="d-block w-100 img-fluid" alt="Slide 2">
+                <img src="img/bus-and-leaves.jpg" class="d-block w-100 img-fluid" alt="Slide 2">
                 <div class="carousel-caption d-none d-md-block">
                     <h5>Professional drivers</h5>
                     <p>They are very knowledgeable about the city routes and can find the shortest route without breaking any traffic rules</p>
                 </div>
             </div>
             <div class="carousel-item">
-                <img src="img/pexels-sevenstorm-juhaszimrus-1605001.jpg" class="d-block w-100 img-fluid" alt="Slide 3">
+                <img src="img/taxi-logo.jpg" class="d-block w-100 img-fluid" alt="Slide 3">
                 <div class="carousel-caption d-none d-md-block">
                     <h5>24/7 service</h5>
                     <p>As taxi services are available 24/7, you can enjoy a taxi ride any time or during transportation emergencies</p>

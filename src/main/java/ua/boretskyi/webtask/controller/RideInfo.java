@@ -21,7 +21,15 @@ public class RideInfo extends HttpServlet{
 	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		int id = Integer.parseInt(req.getParameter("id"));
+		int id = 0;
+		try{
+			id = Integer.parseInt(req.getParameter("id"));
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+			String message = "You don`t have rights to view this info";
+			forwardToErrorPageWithMessage(req, resp, message);
+			return;
+		}
 		HttpSession session = req.getSession();
 		RideManager rm = new RideManager();
 		UserManager um = new UserManager();
@@ -39,8 +47,8 @@ public class RideInfo extends HttpServlet{
 		}
 		
 		if(ride == null || driver == null || car == null || ride.getUserId() != user.getId()) {
-			req.setAttribute("message", "You don`t have rights to view this info");
-			req.getRequestDispatcher("error.jsp").forward(req, resp);
+			String message = "You don`t have rights to view this info";
+			forwardToErrorPageWithMessage(req, resp, message);
 			return;
 		}
 		
@@ -53,5 +61,11 @@ public class RideInfo extends HttpServlet{
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		doGet(req, resp);
+	}
+	
+	private void forwardToErrorPageWithMessage(HttpServletRequest req, HttpServletResponse resp, String message)
+			throws ServletException, IOException {
+		req.setAttribute("message", message);
+		req.getRequestDispatcher("error.jsp").forward(req, resp);
 	}
 }

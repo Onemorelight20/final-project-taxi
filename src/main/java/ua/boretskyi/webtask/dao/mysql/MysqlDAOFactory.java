@@ -3,6 +3,7 @@ package ua.boretskyi.webtask.dao.mysql;
 import ua.boretskyi.webtask.dao.CarDAO;
 import ua.boretskyi.webtask.dao.DAOFactory;
 import ua.boretskyi.webtask.dao.RideDAO;
+import ua.boretskyi.webtask.dao.RideStatsDAO;
 import ua.boretskyi.webtask.dao.UserDAO;
 
 public class MysqlDAOFactory extends DAOFactory{
@@ -23,6 +24,11 @@ public class MysqlDAOFactory extends DAOFactory{
 	@Override
 	public RideDAO getRideDAO() {
 		return new MysqlRideDAO();
+	}
+
+	@Override
+	public RideStatsDAO getRideStatsDAO() {
+		return new MysqlRideStatsDAO();
 	}
 
 }

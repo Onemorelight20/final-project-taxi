@@ -12,11 +12,13 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import ua.boretskyi.webtask.dao.entity.Car;
 import ua.boretskyi.webtask.dao.entity.Ride;
+import ua.boretskyi.webtask.dao.entity.RideStats;
 import ua.boretskyi.webtask.dao.entity.User;
 import ua.boretskyi.webtask.dao.entity.User.Role;
 import ua.boretskyi.webtask.logic.DBException;
 import ua.boretskyi.webtask.logic.RideBuilder;
 import ua.boretskyi.webtask.logic.RideManager;
+import ua.boretskyi.webtask.logic.RideStatsManager;
 
 @WebServlet("/profile")
 public class Profile extends HttpServlet {
@@ -32,29 +34,46 @@ public class Profile extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		HttpSession session = req.getSession();
+		User user = (User) session.getAttribute("user");
 
-		if (session.getAttribute("user") == null) {
+		if (user == null) {
 			resp.sendRedirect("login");
 		} else {
-			User user = (User) session.getAttribute("user");
-
 			if (isAdmin(user)) {
+				provideRequestWithStatsAttributes(req);
 				req.getRequestDispatcher("admin.jsp").forward(req, resp);
-				;
 			} else if (isClient(user)) {
 				if (req.getParameter("rides") != null) {
 					showUserRides(req, resp, user);
 					return;
 				}
-
 				req.getRequestDispatcher("user-profile.jsp").forward(req, resp);
 			}
-
 		}
 
 		session.setAttribute("typesOfCar", Car.Type.values());
 		session.removeAttribute(ERROR_MESSAGE_ATTRIBUTE);
 		session.removeAttribute(SUCCESS_MESSAGE_ATTRIBUTE);
+	}
+
+	private void provideRequestWithStatsAttributes(HttpServletRequest req) {
+		RideStatsManager rideStatsManager = new RideStatsManager();
+		RideStats allTimeStats = null;
+		RideStats lastMonthStats = null;
+		RideStats lastWeekStats = null;
+		RideStats last24HoursStats = null;
+		try {
+			allTimeStats = rideStatsManager.getAllTimeStats();
+			lastMonthStats = rideStatsManager.getLastMonthStats();
+			lastWeekStats = rideStatsManager.getLastWeekStats();
+			last24HoursStats = rideStatsManager.get24HoursStats();
+		} catch (DBException e) {
+			e.printStackTrace();
+		}
+		req.setAttribute("allTimeStats", allTimeStats);
+		req.setAttribute("lastMonthStats", lastMonthStats);
+		req.setAttribute("lastWeekStats", lastWeekStats);
+		req.setAttribute("last24HoursStats", last24HoursStats);
 	}
 
 	private void fillInRideInfo(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {

@@ -11,15 +11,8 @@
 	rel="stylesheet"
 	integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
 	crossorigin="anonymous">
-<style type="text/css">
- .tab_content {
- 	display: none;
- }
- 
- #tab1:checked ~ .tab_content{
-	display: inline-block;
-}
-</style>
+
+
 </head>
 <body>
 	<jsp:include page="header.jsp"></jsp:include>
@@ -36,19 +29,7 @@
 				<li class="list-group-item"><b>Phone number: </b>${user.getPhoneNumber()}</li>
 			</ul>
 		</div>
-		<div class="btn-group my-3" role="group">
-			<input type="radio" class="btn-check" name="btnradio" id="tab1"
-				checked> <label class="btn btn-outline-primary"
-				for="tab1">All time stats</label> 
-			<input type="radio" class="btn-check" name="btnradio" id="tab2"> <label
-				class="btn btn-outline-primary" for="tab2">Last months
-				stats</label>
-		</div>
-		
-				<div class="tab_content">Tab1 Contents</div>
-				
-		<div class="tab_content">Tab2 Contents</div>
 	</div>
-
+	<jsp:include page="short-stats.jsp"></jsp:include>
 </body>
 </html>
