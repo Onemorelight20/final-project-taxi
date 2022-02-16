@@ -17,7 +17,7 @@ import ua.boretskyi.webtask.logic.DBException;
 
 public class MysqlUserDAO implements UserDAO {
 
-	private static final String PS_INSERT_USER_BY_NAME_EMAIL_PNONE_PASSWORD = "INSERT INTO user (name, email, phone_number, password) VALUES (?, ?, ?, ?)";
+	private static final String PS_INSERT_USER_BY_NAME_EMAIL_PNONE_PASSWORD = "INSERT INTO user (name, email, phone_number, password, role) VALUES (?, ?, ?, ?, ?)";
 	private static final String PS_FIND_USER_BY_ID = "SELECT * FROM user WHERE id=?";
 	private static final String PS_FIND_USER_BY_EMAIL = "SELECT * FROM user WHERE email=?";
 	private static final String PS_FIND_USER_BY_EMAIL_AND_PASSWORD = "SELECT * FROM user where email=? AND password=?";
@@ -39,7 +39,6 @@ public class MysqlUserDAO implements UserDAO {
 			rs = ps.getGeneratedKeys();
 			rs.next();
 			user.setId(rs.getInt(1));
-			user.setRole(User.Role.CLIENT);
 		} catch (SQLException e) {
 			//here goes logging
 			
@@ -199,6 +198,7 @@ public class MysqlUserDAO implements UserDAO {
 		ps.setString(2, user.getEmail());
 		ps.setString(3, user.getPhoneNumber());
 		ps.setString(4, user.getPassword());
+		ps.setString(5, user.getRole().toString().toLowerCase());
 	}
 
 

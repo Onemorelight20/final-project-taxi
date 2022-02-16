@@ -29,7 +29,18 @@
 				<li class="list-group-item"><b>Phone number: </b>${user.getPhoneNumber()}</li>
 			</ul>
 		</div>
+		<jsp:include page="short-stats.jsp"></jsp:include>
+		<c:if test="${not empty sessionScope.successMessage}">
+			<div class="alert alert-success" role="alert">${sessionScope.successMessage}</div>
+		</c:if>
+		<a type="button" class="btn btn-outline-dark" href="stats">Detailed
+			statistics</a>
+		<h4 class="mt-3">Drivers control block</h4>
+		<a type="button" class="btn btn-outline-dark" href="add-driver">Add
+			a driver into system</a>
+			<a type="button" class="btn btn-outline-dark" href="add-driver">See all drivers</a>
 	</div>
-	<jsp:include page="short-stats.jsp"></jsp:include>
+
+
 </body>
 </html>

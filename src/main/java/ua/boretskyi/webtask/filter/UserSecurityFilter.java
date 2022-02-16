@@ -16,33 +16,31 @@ import ua.boretskyi.webtask.dao.entity.User;
 /**
  * Servlet Filter implementation class UserSecurityFilter
  */
-@WebFilter(urlPatterns = {"/profile", "/cancel-ride", "/ride-info", "/ride"})
+@WebFilter(urlPatterns = { "/profile", "/cancel-ride", "/ride-info", "/ride" })
 public class UserSecurityFilter implements Filter {
 
 	@Override
 	public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain)
 			throws IOException, ServletException {
-		
+
 		HttpServletRequest request = (HttpServletRequest) req;
-		HttpServletResponse response = (HttpServletResponse) resp;	
-		
-		String path = request.getRequestURI().substring(request.getContextPath().length()).replaceAll("[/]+$", ""); 
+		HttpServletResponse response = (HttpServletResponse) resp;
+
+		String path = request.getRequestURI().substring(request.getContextPath().length()).replaceAll("[/]+$", "");
 		HttpSession session = request.getSession();
 		User user = (User) session.getAttribute("user");
-		
-		if(path.equals("/profile")) {
-			if(user == null) {
+
+		if (path.equals("/profile")) {
+			if (user == null) {
 				response.sendRedirect("login");
 			} else {
 				chain.doFilter(request, response);
 			}
-		} else if(user == null || user.getRole() != User.Role.CLIENT) {
+		} else if (user == null || user.getRole() != User.Role.CLIENT) {
 			response.sendRedirect("index.jsp");
-		}
-		else {
-		chain.doFilter(request, response);
+		} else {
+			chain.doFilter(request, response);
 		}
 	}
 
- 
 }

@@ -18,7 +18,7 @@
 	crossorigin="anonymous"></script>
 </head>
 <body>
-	<div class="container my-3">
+	<div class="my-3">
 		<h4>Brief statistics</h4>
 		<ul class="nav nav-tabs" id="myTab" role="tablist">
 			<li class="nav-item" role="presentation">
@@ -81,7 +81,7 @@
 			</div>
 			<hr>
 		</div>
-		<a type="button" class="btn btn-outline-dark" href="stats">Detailed statistics</a>
+		
 	</div>
 </body>
 </html>

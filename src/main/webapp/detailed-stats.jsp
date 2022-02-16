@@ -24,15 +24,18 @@
 		<div class="row">
 			<div class="col-3">
 				<h6>Filter by date</h6>
-				<form method="get" action="stats">
-					<label for="startDate">Start</label> <input id="startDate"
-						class="form-control" type="date" name="from" value="${param.from}" />
-					<span id="startDateSelected"></span> <label for="endDate">End</label>
-					<input id="endDate" class="form-control" type="date" name="to"
-						value="${param.to}" /> <span id="endDateSelected"></span>
-					<button type="submit" class="btn btn-primary">Submit</button>
-					<a type="submit" class="btn btn-outline-warning btn-sm">Apply</a> <a
-						type="button" class="btn btn-outline-warning btn-sm">Reset</a>
+				<form method="GET" action="stats">
+					<label for="startDate">From</label> <input id="startDate"
+						class="form-control" type="date" name="from" value="${param.from}"
+						required /> <span id="startDateSelected"></span> <label
+						for="endDate">To</label> <input id="endDate" class="form-control"
+						type="date" name="to" value="${param.to}" required /> <span
+						id="endDateSelected"></span>
+					<div class="mt-2">
+						<button type="submit" class="btn btn-outline-warning btn-sm">Submit</button>
+						<a href="<my:param name='rdf' value='true'/>"
+							class="btn btn-outline-warning btn-sm">Reset</a>
+					</div>
 				</form>
 			</div>
 			<div class="col-9">
@@ -52,7 +55,8 @@
 						class="btn btn-dark active" aria-current="page">Ascending</a> <a
 						href="<my:param name='order' value='desc'/>" class="btn btn-dark">Descending</a>
 				</div>
-				<a type="button" class="btn btn-dark" href="<my:param name='sortby' value='none' />">Reset sorting</a>
+				<a type="button" class="btn btn-dark"
+					href="<my:param name='sortby' value='none' />">Reset sorting</a>
 			</div>
 		</div>
 		<table class="table table-hover my-1" sortable>

@@ -16,7 +16,7 @@ import ua.boretskyi.webtask.dao.entity.User;
 /**
  * Servlet Filter implementation class AdminSecurityFilter
  */
-@WebFilter(urlPatterns = {"/stats"})
+@WebFilter(urlPatterns = {"/stats", "/add-driver"})
 public class AdminSecurityFilter implements Filter {
 
 	public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws IOException, ServletException {

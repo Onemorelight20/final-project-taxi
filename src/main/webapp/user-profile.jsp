@@ -28,8 +28,8 @@
 				</ul>
 			</div>
 			<a class="btn btn-warning mt-3" href="edit-profile" role="button">Edit
-				profile</a> <a class="btn btn-warning mt-3" href="profile?rides=show"
-				role="button">My rides</a>
+				profile</a> <a class="btn btn-warning mt-3" href="rides?page=1&pageSize=3" role="button">My
+				rides</a>
 		</div>
 
 		<div class="container pt-3">

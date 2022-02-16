@@ -42,7 +42,6 @@ public class ConnectionPool {
 			throw new DBException("failed to get a connection", e);
 		} 
 		 
-		 System.out.println("Connection have been created.");
 		 
 		 return connection;
 	  }

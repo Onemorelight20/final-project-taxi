@@ -14,11 +14,21 @@ public class User implements Serializable{
 	public User() {
 	}
 	
+	/**
+	 * Creates a user with CLIENT role by default
+	 * 
+	 * @param name
+	 * @param phoneNumber
+	 * @param email
+	 * @param password
+	 * 
+	 */
 	public User(String name, String phoneNumber, String email, String password) {
 		this.name = name;
 		this.phoneNumber = phoneNumber;
 		this.email = email;
 		this.password = password;
+		this.role = Role.CLIENT;
 	}
 	
 	public void setId(int id) {
