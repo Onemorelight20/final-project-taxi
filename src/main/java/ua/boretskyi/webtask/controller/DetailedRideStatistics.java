@@ -3,11 +3,9 @@ package ua.boretskyi.webtask.controller;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -25,11 +23,34 @@ import ua.boretskyi.webtask.logic.UrlParseHelper;
 @WebServlet("/stats")
 public class DetailedRideStatistics extends HttpServlet {
 	private static final Logger log = Logger.getLogger(DetailedRideStatistics.class);
-	
+	private static final int shift = 0;
+
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		RideManager rideManager = new RideManager();
 		List<Ride> allRides = new ArrayList<>();
+		String paramPage = req.getParameter("page");
+		String paramPageSize = req.getParameter("pageSize");
+		String sortBy = req.getParameter("sortby");
+		String order = req.getParameter("order");
+		Integer page = null;
+		Integer pageSize = null;
+		try {
+			if (paramPage == null || paramPageSize == null) {
+				paramPage = req.getAttribute("page").toString();
+				paramPageSize = req.getAttribute("pageSize").toString();
+				log.info("paramPage || paramPageSize were not passed in URL params, getting them from request");
+			}
+			page = Integer.parseInt(paramPage);
+			pageSize = Integer.parseInt(paramPageSize);
+		} catch (Exception e) {
+
+			log.info("Exception was thrown while parsing page params");
+			e.printStackTrace();
+			req.setAttribute("message", "Illegal params were passed in URL");
+			req.getRequestDispatcher("error.jsp").forward(req, resp);
+			return;
+		}
 
 		try {
 			allRides = rideManager.findAll();
@@ -38,60 +59,84 @@ public class DetailedRideStatistics extends HttpServlet {
 			e.printStackTrace();
 		}
 
-		String sortBy = req.getParameter("sortby");
-		String order = req.getParameter("order");
+		
 		sortRidesByParams(allRides, sortBy, order);
-		
-		
-		if(req.getParameter("rdf") != null) {
-			StringBuffer requestURL = req.getRequestURL();
-			if (req.getQueryString() != null) {
-			    requestURL.append("?").append(req.getQueryString());
-			}
-			UrlParseHelper urlParseHelper = new UrlParseHelper(requestURL.toString());
-			String completeURL = requestURL.toString();
-			System.out.println("URL: " + completeURL);
-			String newUrl = urlParseHelper.removeParamFromUrl("rdf")
-					.removeParamFromUrl("from")
-					.removeParamFromUrl("to")
-					.getUrl();
+
+		if (req.getParameter("rdf") != null) {
+			StringBuffer requestURL = getFullURL(req);
+			String newUrl = removeDateFilteringParamsFromUrl(requestURL);
 			resp.sendRedirect(newUrl);
 			return;
 		}
-		
+
 		try {
 			processDateFiltering(req, resp, allRides);
 		} catch (ParseException e) {
 			log.warn("Exception happend while trying to filter rides by date");
 			e.printStackTrace();
 		}
+		
+		int size = allRides.size();
+		int pageCount = (int) Math.ceil((double)size / pageSize);
 
-		req.setAttribute("allRides", allRides);
+		if(page > pageCount) {
+			page = pageCount;
+		}
+		int fromIndex = pageSize * (page - 1) > 0 ? pageSize * (page - 1) : 0;
+		int toIndex = pageSize * (page - 1) + pageSize;
+		List<Ride> ridesToShow = allRides.subList(fromIndex,
+				(toIndex > allRides.size() ? allRides.size() : toIndex));
+
+		int minPagePossible = page - shift < 1 ? 1 : page - shift;
+		int maxPagePossible = page + shift > pageCount ? pageCount : page + shift;
+
+		System.out.println("RidesToShow: " + ridesToShow);
+		System.out.println("List size: " + ridesToShow.size());
+		req.setAttribute("pageCount", pageCount);
+		req.setAttribute("page", page);
+		req.setAttribute("pageSize", pageSize);
+		req.setAttribute("generalSize", size);
+		req.setAttribute("minPossiblePage", minPagePossible);
+		req.setAttribute("maxPossiblePage", maxPagePossible);
+		req.setAttribute("servletUrl", "stats");
+		req.setAttribute("list", ridesToShow);
 		req.getRequestDispatcher("detailed-stats.jsp").forward(req, resp);
 	}
 
-	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		doGet(req, resp);
+	private String removeDateFilteringParamsFromUrl(StringBuffer requestURL) {
+		UrlParseHelper urlParseHelper = new UrlParseHelper(requestURL.toString());
+		String completeURL = requestURL.toString();
+		System.out.println("URL: " + completeURL);
+		String newUrl = urlParseHelper.removeParamFromUrl("rdf").removeParamFromUrl("from").removeParamFromUrl("to")
+				.getUrl();
+		return newUrl;
 	}
-	
-	
-	private void processDateFiltering(HttpServletRequest req, HttpServletResponse resp, List<Ride> rides) throws ParseException {
+
+	private StringBuffer getFullURL(HttpServletRequest req) {
+		StringBuffer requestURL = req.getRequestURL();
+		if (req.getQueryString() != null) {
+			requestURL.append("?").append(req.getQueryString());
+		}
+		return requestURL;
+	}
+
+	private void processDateFiltering(HttpServletRequest req, HttpServletResponse resp, List<Ride> rides)
+			throws ParseException {
 		String dateFrom = req.getParameter("from");
 		String dateTo = req.getParameter("to");
 		boolean doActions = (req.getParameter("datereset") == null) && (dateFrom != null && dateTo != null);
-		
-		if(doActions) {
+
+		if (doActions) {
 			LocalDate fromSelected = LocalDate.parse(dateFrom);
 			LocalDate toSelected = LocalDate.parse(dateTo).plusDays(1L);
 			log.info("Process date filtering from " + fromSelected + " to " + toSelected);
 
-			rides.removeIf(ride -> !(ride.getTimeCreated().after(Timestamp.valueOf(fromSelected.atStartOfDay())) 
+			rides.removeIf(ride -> !(ride.getTimeCreated().after(Timestamp.valueOf(fromSelected.atStartOfDay()))
 					&& ride.getTimeCreated().before(Timestamp.valueOf(toSelected.atStartOfDay()))));
 
 		}
 	}
-	
+
 	private void sortRidesByParams(List<Ride> allRides, String sortBy, String order) {
 		Comparator<Ride> byCreationTime = (o1, o2) -> o1.getTimeCreated().compareTo(o2.getTimeCreated());
 		Comparator<Ride> byPrice = (o1, o2) -> (int) (o1.getPrice() - o2.getPrice()) * 100;
@@ -115,7 +160,6 @@ public class DetailedRideStatistics extends HttpServlet {
 			}
 		}
 	}
-
 
 	private void wrappedSorting(List<Ride> allRides, String order, Comparator<Ride> comparator) {
 		if (order == null || order.equals("asc"))

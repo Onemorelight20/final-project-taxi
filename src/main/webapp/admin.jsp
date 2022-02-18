@@ -20,25 +20,17 @@
 	<div class="container my-3">
 		<h3>Hello, ${user.getName()}. You successfully logged in WITH
 			ADMIN PREFERENCES!</h3>
-		<div class="card" style="width: 18rem;">
-			<div class="card-header">Your profile</div>
-			<ul class="list-group list-group-flush">
-				<li class="list-group-item"><b>ID: </b>${user.getId()}</li>
-				<li class="list-group-item"><b>Name: </b>${user.getName()}</li>
-				<li class="list-group-item"><b>E-mail: </b>${user.getEmail() }</li>
-				<li class="list-group-item"><b>Phone number: </b>${user.getPhoneNumber()}</li>
-			</ul>
-		</div>
+		<jsp:include page="user-info-block.jsp"></jsp:include>
 		<jsp:include page="short-stats.jsp"></jsp:include>
 		<c:if test="${not empty sessionScope.successMessage}">
 			<div class="alert alert-success" role="alert">${sessionScope.successMessage}</div>
 		</c:if>
-		<a type="button" class="btn btn-outline-dark" href="stats">Detailed
-			statistics</a>
+		<a type="button" class="btn btn-outline-dark"
+			href="stats?page=1&pageSize=5">Detailed statistics</a>
 		<h4 class="mt-3">Drivers control block</h4>
 		<a type="button" class="btn btn-outline-dark" href="add-driver">Add
-			a driver into system</a>
-			<a type="button" class="btn btn-outline-dark" href="add-driver">See all drivers</a>
+			a driver into system</a> <a type="button" class="btn btn-outline-dark"
+			href="add-driver">See all drivers</a>
 	</div>
 
 

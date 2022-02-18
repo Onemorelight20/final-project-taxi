@@ -16,7 +16,7 @@ import ua.boretskyi.webtask.dao.entity.User;
 /**
  * Servlet Filter implementation class UserSecurityFilter
  */
-@WebFilter(urlPatterns = { "/profile", "/cancel-ride", "/ride-info", "/ride" })
+@WebFilter(urlPatterns = { "/profile", "/cancel-ride", "/ride-info", "/ride", "/rides", "/edit-profile" })
 public class UserSecurityFilter implements Filter {
 
 	@Override
@@ -30,7 +30,7 @@ public class UserSecurityFilter implements Filter {
 		HttpSession session = request.getSession();
 		User user = (User) session.getAttribute("user");
 
-		if (path.equals("/profile")) {
+		if (path.equals("/profile") || path.equals("/edit-profile")) {
 			if (user == null) {
 				response.sendRedirect("login");
 			} else {
